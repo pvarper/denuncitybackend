@@ -112,6 +112,9 @@ export class LoginService {
       throw new Error('Unidad de tiempo no válida');
     }
 
+    console.log('fecha Limite : ' + fechaLimite);
+    console.log('fecha fechaUltimaActualizacion : ' + fechaUltimaActualizacion);
+
     // Comparar las fechas
     return fechaUltimaActualizacion.getTime() < fechaLimite.getTime();
   }
@@ -126,6 +129,11 @@ export class LoginService {
     if (!contrasenaValida) {
       throw new Error();
     }
+
+    this.passwordHistoryService.registrarNuevoHistorial(
+      verificarLoginUsuarioDto.correo,
+      nuevaContrasena,
+    );
 
     return contrasenaValida;
   }
