@@ -11,6 +11,7 @@ import { CrearDenunciaRequestDto } from './dto/crear-denuncia.request.dto';
 import { DenunciasValidatorService } from './denuncias.validator.service';
 import { CancelarDenunciaRequestDto } from './dto/cancelar-denuncia.request.dto';
 import { BaseResponse } from '../common/dto/base/base-response.dto';
+import { json } from 'express';
 
 @Controller('denuncias')
 export class DenunciasController {
@@ -21,6 +22,7 @@ export class DenunciasController {
 
   @Post()
   async crear(@Body() crearDenunciaDto: CrearDenunciaRequestDto) {
+    console.log('crearDenunciaDto : ' + JSON.stringify(crearDenunciaDto));
     // const resultValidation =
     //   this.denunciasValidatorService.validarDTO(crearDenunciaDto);
     // if (resultValidation.length > 0) {
