@@ -18,11 +18,11 @@ export class DenunciasValidatorService {
     }
 
     // Validación del campo "imagenes"
-    if (!Array.isArray(dto.imagenes) || dto.imagenes.length === 0) {
+    if (!Array.isArray(dto.imagenesList) || dto.imagenesList.length === 0) {
       errores.push(
         'El campo "imagenes" debe ser un array y contener al menos una imagen.',
       );
-    } else if (dto.imagenes.length > 3) {
+    } else if (dto.imagenesList.length > 3) {
       errores.push(
         'El campo "imagenes" debe contener como máximo tres imagenes.',
       );

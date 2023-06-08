@@ -7,5 +7,6 @@ export class CrearDenunciaRequestDto {
   tipoDenuncia: string;
   lon: string;
   lat: string;
-  imagenes: string[];
+  imagenes: string;
+  imagenesList: string[];
 }

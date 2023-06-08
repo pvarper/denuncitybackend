@@ -20,9 +20,16 @@ export class DenunciasController {
     private readonly denunciasValidatorService: DenunciasValidatorService,
   ) {}
 
+  convertirCadenaAArray(cadena: string): string[] {
+    return JSON.parse(cadena.replace(/\\/g, ''));
+  }
+
   @Post()
   async crear(@Body() crearDenunciaDto: CrearDenunciaRequestDto) {
-    console.log('crearDenunciaDto : ' + JSON.stringify(crearDenunciaDto));
+    crearDenunciaDto.imagenesList = this.convertirCadenaAArray(
+      crearDenunciaDto.imagenes,
+    );
+
     // const resultValidation =
     //   this.denunciasValidatorService.validarDTO(crearDenunciaDto);
     // if (resultValidation.length > 0) {
