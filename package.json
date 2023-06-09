@@ -22,6 +22,7 @@
     "postbuild": "npm run copy-public"
   },
   "dependencies": {
+    "@aws-sdk/client-rekognition": "^3.348.0",
     "@nestjs-modules/mailer": "^1.8.1",
     "@nestjs/cli": "^9.0.0",
     "@nestjs/common": "^9.0.0",
