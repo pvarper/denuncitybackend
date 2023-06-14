@@ -268,4 +268,13 @@ export class DenunciasService {
 
     return denunciasPorUsuario;
   }
+
+  async obtenerListaDenunciasPorTipo() {
+    const denunciasPorTipo = await this.denunciaModel.aggregate([
+      { $group: { _id: '$tipoDenuncia', total: { $sum: 1 }, aceptadas: { $sum: { $cond: [{ $eq: ['$estado', 'ACEPTADA'] }, 1, 0] } } } },
+      { $sort: { aceptadas: -1 } }
+    ]).exec();
+
+    return denunciasPorTipo;
+  }
 }

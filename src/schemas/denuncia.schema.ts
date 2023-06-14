@@ -4,7 +4,7 @@ import { HydratedDocument } from 'mongoose';
 export type DenunciaDocument = HydratedDocument<Denuncia>;
 
 @Schema()
-export class Denuncia {
+export class  Denuncia {
   @Prop({ required: true })
   hash: string;
 

@@ -51,6 +51,13 @@ export class DenunciasController {
     return result;
   }
 
+  @Get('/listar')
+  async listarDenunciasPorGruposTipoDenuncia() {
+    const result = await this.denunciasService.obtenerListaDenunciasPorTipo();
+
+    return result;
+  }
+
   @Post('/cancelar')
   async cancelarDenuncia(
     @Body() cancelarDenunciaRequestDto: CancelarDenunciaRequestDto,
