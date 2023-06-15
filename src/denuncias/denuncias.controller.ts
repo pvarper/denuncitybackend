@@ -1,17 +1,8 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Get,
-  Post,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { DenunciasService } from './denuncias.service';
 import { CrearDenunciaRequestDto } from './dto/crear-denuncia.request.dto';
 import { DenunciasValidatorService } from './denuncias.validator.service';
 import { CancelarDenunciaRequestDto } from './dto/cancelar-denuncia.request.dto';
-import { BaseResponse } from '../common/dto/base/base-response.dto';
-import { json } from 'express';
 
 @Controller('denuncias')
 export class DenunciasController {
@@ -52,8 +43,23 @@ export class DenunciasController {
   }
 
   @Get('/listarall')
-  async listarAllDenuncias() {
-    const result = await this.denunciasService.obtenerAllDenuncias();
+  async listarAllDenuncias(
+    @Query('estado') estado: string,
+    @Query('fechaInicio') fechaInicio: string,
+    @Query('fechaFin') fechaFin: string,
+    @Query('tipoDenuncia') tipoDenuncia: string,
+  ) {
+    console.log('estado : ' + estado);
+    console.log('fechaInicio : ' + fechaInicio);
+    console.log('fechaFin : ' + fechaFin);
+    console.log('tipoDenuncia : ' + tipoDenuncia);
+
+    const result = await this.denunciasService.obtenerAllDenuncias(
+      estado,
+      fechaInicio,
+      fechaFin,
+      tipoDenuncia,
+    );
 
     return result;
   }

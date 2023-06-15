@@ -13,6 +13,8 @@ import { CancelarDenunciaRequestDto } from './dto/cancelar-denuncia.request.dto'
 import { ErrorResponse } from '../common/dto/base/error-response.dto';
 import { ErrorCodes } from '../common/dto/base/ErrorCodes';
 import { BaseResponse } from '../common/dto/base/base-response.dto';
+import { DenunciaDto } from '../common/dto/denuncia-dto';
+import { TipoDenuncia } from '../common/dto/tipo-denuncia';
 
 @Injectable()
 export class DenunciasService {
@@ -270,19 +272,102 @@ export class DenunciasService {
   }
 
   async obtenerListaDenunciasPorTipo() {
-    const denunciasPorTipo = await this.denunciaModel.aggregate([
-      { $group: { _id: '$tipoDenuncia', total: { $sum: 1 }, aceptadas: { $sum: { $cond: [{ $eq: ['$estado', 'ACEPTADA'] }, 1, 0] } } } },
-      { $sort: { aceptadas: -1 } }
-    ]).exec();
+    const denunciasPorTipo = await this.denunciaModel
+      .aggregate([
+        {
+          $group: {
+            _id: '$tipoDenuncia',
+            total: { $sum: 1 },
+            aceptadas: {
+              $sum: { $cond: [{ $eq: ['$estado', 'ACEPTADA'] }, 1, 0] },
+            },
+          },
+        },
+        { $sort: { aceptadas: -1 } },
+      ])
+      .exec();
 
     return denunciasPorTipo;
   }
 
+  async obtenerAllDenuncias(
+    estado: string,
+    fechaInicio: string,
+    fechaFin: string,
+    tipoDenuncia: string,
+  ) {
+    const denuncias = await this.obtenerAllDenunciasBD(
+      estado,
+      fechaInicio,
+      fechaFin,
+      tipoDenuncia,
+    );
 
-  async obtenerAllDenuncias() {
-    const denuncias = await this.denunciaModel
-      .find().exec();
+    const denunciasDto = this.mapearDenuncias(denuncias);
+
+    return denunciasDto;
+  }
+
+  async obtenerAllDenunciasBD(
+    estado: string,
+    fechaInicio: string,
+    fechaFin: string,
+    tipoDenuncia: string,
+  ) {
+    let query = this.denunciaModel.find();
+
+    query = query.where('estado').nin(['RECHAZADA', 'CANCELADO', 'PENDIENTE']);
+
+    if (estado) {
+      query = query.where('estado', estado);
+    }
+
+    if (fechaInicio) {
+      // @ts-ignore
+      query = query.where('createdAt').gte(new Date(fechaInicio));
+    }
+
+    if (fechaFin) {
+      // @ts-ignore
+      query = query.where('createdAt').lte(new Date(fechaFin));
+    }
+
+    if (tipoDenuncia) {
+      query = query.where('tipoDenuncia', tipoDenuncia);
+    }
+
+    const denuncias = await query.exec();
 
     return denuncias;
+  }
+
+  private mapearDenuncias(denuncias: Denuncia[]): DenunciaDto[] {
+    const tiposDenuncias: TipoDenuncia[] = [
+      { tipo: 'Alumbrado', color: 'yellow' },
+      { tipo: 'Basura acumulada', color: 'black' },
+      { tipo: 'Baches', color: 'brown' },
+      { tipo: 'Fugas de agua', color: 'blue' },
+      { tipo: 'Plazas descuidadas', color: 'green' },
+    ];
+
+    return denuncias.map((denuncia) => {
+      const tipoDenuncia = tiposDenuncias.find(
+        (tipo) => tipo.tipo === denuncia.tipoDenuncia,
+      );
+
+      return {
+        _id: denuncia.hash,
+        correo: denuncia.correo,
+        titulo: denuncia.titulo,
+        descripcion: denuncia.descripcion,
+        tipoDenuncia: denuncia.tipoDenuncia,
+        colorMarker: tipoDenuncia ? tipoDenuncia.color : '', // Obtener el color del tipo de denuncia
+        estado: denuncia.estado,
+        imagenesUrls: denuncia.imagenesUrls,
+        lon: denuncia.lon,
+        lat: denuncia.lat,
+        createdAt: denuncia.createdAt,
+      };
+    });
   }
 }
