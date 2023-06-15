@@ -366,8 +366,17 @@ export class DenunciasService {
         imagenesUrls: denuncia.imagenesUrls,
         lon: denuncia.lon,
         lat: denuncia.lat,
-        createdAt: denuncia.createdAt,
+        createdAt: this.parseDate(denuncia.createdAt),
       };
     });
+  }
+
+  parseDate(createdAt: Date): string {
+    const fecha = new Date(createdAt);
+    const dia = String(fecha.getUTCDate()).padStart(2, '0'); // Día del mes, de 1 a 31.
+    const mes = String(fecha.getUTCMonth() + 1).padStart(2, '0'); // Los meses se cuentan de 0 a 11, por lo que sumamos 1.
+    const ano = fecha.getUTCFullYear(); // Año (4 dígitos).
+
+    return `${dia}/${mes}/${ano}`;
   }
 }

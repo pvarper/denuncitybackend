@@ -9,5 +9,5 @@ export class DenunciaDto {
   imagenesUrls: string[];
   lon: string;
   lat: string;
-  createdAt: Date;
+  createdAt: string;
 }
