@@ -51,7 +51,14 @@ export class DenunciasController {
     return result;
   }
 
-  @Get('/listar')
+  @Get('/listarall')
+  async listarAllDenuncias() {
+    const result = await this.denunciasService.obtenerAllDenuncias();
+
+    return result;
+  }
+
+  @Get('/listarportipo')
   async listarDenunciasPorGruposTipoDenuncia() {
     const result = await this.denunciasService.obtenerListaDenunciasPorTipo();
 

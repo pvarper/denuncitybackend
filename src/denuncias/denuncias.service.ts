@@ -277,4 +277,12 @@ export class DenunciasService {
 
     return denunciasPorTipo;
   }
+
+
+  async obtenerAllDenuncias() {
+    const denuncias = await this.denunciaModel
+      .find().exec();
+
+    return denuncias;
+  }
 }
